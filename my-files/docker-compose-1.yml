@@ -1,3 +1,4 @@
+# Simple zookeeper, kafka broker and UI
 version: '2'
 services:
   zookeeper:

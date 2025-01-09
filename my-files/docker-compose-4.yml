@@ -1,3 +1,4 @@
+# Realizando operações no Kafka usando Rest API
 version: '2'
 services:
   zookeeper:
@@ -49,14 +50,12 @@ services:
      - CONNECT_PRODUCER_COMPRESSION_TYPE=lz4
      - CONNECT_CONSUMER_FETCH_MIN_BYTES=10000
      - CONNECT_CONSUMER_MAX_POLL_INTERVAL_MS=1800000
-    #  tempo maximo antes de ser desconectado do broker
      - CONNECT_OFFSET_FLUSH_TIMEOUT_MS=600000
      - TZ=America/Sao_Paulo
      - CONNECT_KEY_CONVERTER=org.apache.kafka.connect.storage.StringConverter
      - CONNECT_VALUE_CONVERTER=org.apache.kafka.connect.storage.StringConverter
      - KAFKA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
     volumes:
-    # Download na sua maquina o JDBC por exemplo pra conectar com postgre
      - "./data:/data/"
     healthcheck:
       disable: true
@@ -80,3 +79,14 @@ services:
      - kconnect
     ports:
       - 8080:8080
+
+  kafka-rest:
+    image: confluentinc/cp-kafka-rest:7.5.3
+    depends_on:
+      - broker
+    ports:
+      - 8082:8082/tcp
+    environment:
+      KAFKA_REST_HOST_NAME: 'localhost'
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'PLAINTEXT://broker:29092'
+      KAFKA_REST_LISTENERS: 'http://0.0.0.0:8082'
